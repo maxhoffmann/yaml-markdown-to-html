@@ -1,4 +1,4 @@
-transform-yaml-markdown [![build][3]][4]
+transform-yaml-markdown [![version][1]][2] [![build][3]][4]
 =======================
 
 transform a folder of markdown files with yaml frontmatter to html
@@ -22,5 +22,7 @@ LICENSE
 
 The MIT License (MIT) Maximilian Hoffmann
 
+[1]: http://img.shields.io/npm/v/transform-yaml-markdown.svg?style=flat
+[2]: https://www.npmjs.org/package/transform-yaml-markdown
 [3]: http://img.shields.io/travis/maxhoffmann/transform-yaml-markdown.svg?style=flat
 [4]: https://travis-ci.org/maxhoffmann/transform-yaml-markdown
