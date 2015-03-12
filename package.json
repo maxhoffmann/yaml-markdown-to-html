@@ -1,8 +1,26 @@
 {
-  "name": "wiki",
+  "name": "transform-yaml-markdown",
   "version": "1.0.0",
-  "description": "static node based wiki builder",
+  "description": "transform a folder of markdown files with yaml frontmatter to html",
   "main": "index.js",
+  "bin": "bin/cli.js",
   "author": "Maximilian Hoffmann",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://maxhoffmann@github.com/maxhoffmann/transform-yaml-markdown"
+  },
+  "homepage": "https://github.com/maxhoffmann/transform-yaml-markdown",
+  "dependencies": {
+    "globby": "^1.2.0",
+    "fs-extra": "^0.16.5",
+    "yaml-front-matter": "^3.2.3"
+  },
+  "keywords": [
+    "markdown",
+    "yaml",
+    "frontmatter",
+    "transform",
+    "render"
+  ]
 }
