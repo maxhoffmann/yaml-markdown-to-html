@@ -25,5 +25,9 @@
     "frontmatter",
     "transform",
     "render"
-  ]
+  ],
+  "devDependencies": {
+    "tap-dot": "^1.0.0",
+    "tape": "^3.5.0"
+  }
 }
