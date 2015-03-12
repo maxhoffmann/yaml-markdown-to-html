@@ -1,0 +1,8 @@
+{
+  "name": "wiki",
+  "version": "1.0.0",
+  "description": "static node based wiki builder",
+  "main": "index.js",
+  "author": "Maximilian Hoffmann",
+  "license": "MIT"
+}
