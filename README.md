@@ -14,8 +14,11 @@ Usage
 -----
 
 ```bash
-transform-yaml-markdown <source> <destination> <pathToRenderFunction>
+transform-yaml-markdown <sourceFolder> <destinationFolder> <pathToRenderFunction>
 ```
+
+The __render function__ is a common.js function, that accepts a data object as an argument
+and returns a Promise that should fulfill with the rendered html. An example function can be found in the `test` folder. (it doesn’t render html though)
 
 LICENSE
 -------
