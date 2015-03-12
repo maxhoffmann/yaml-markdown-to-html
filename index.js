@@ -25,7 +25,7 @@ function transformYamlMarkdown(sourceFolder, destinationFolder, renderFunction) 
 
   paths.map(function(filePath) {
     var extension = path.extname(filePath);
-    var relativePath = path.relative('src', filePath)
+    var relativePath = path.relative(sourceFolder, filePath)
       .replace(RegExp(extension+'$'), '');
     var destinationPath = path.join(destinationFolder, relativePath+'.html');
 

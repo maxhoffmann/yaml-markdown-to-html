@@ -11,6 +11,9 @@
     "url": "https://maxhoffmann@github.com/maxhoffmann/transform-yaml-markdown"
   },
   "homepage": "https://github.com/maxhoffmann/transform-yaml-markdown",
+  "scripts": {
+    "test": "tape test/ | tap-dot"
+  },
   "dependencies": {
     "globby": "^1.2.0",
     "fs-extra": "^0.16.5",
