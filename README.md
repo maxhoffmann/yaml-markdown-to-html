@@ -21,7 +21,7 @@ The `render` and `postRender` functions are exported common.js functions.
 
 `render` gets a `data` object passed with all meta data and markdown from the current file. It should return a Promise that fulfills with the rendered HTML. An example function can be found in the `test` folder.
 
-`postRender` receives the paths of all rendered html files and should return a Promise that fulfills after a certain build step.
+`postRender` receives the paths and the data of all rendered html files and should return a Promise that fulfills after a certain build step.
 
 LICENSE
 -------
