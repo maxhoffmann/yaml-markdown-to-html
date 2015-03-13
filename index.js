@@ -4,45 +4,51 @@ var path = require('path');
 var globby = require('globby');
 var fs = require('fs-extra');
 var yaml = require('yaml-front-matter');
+var chalk = require('chalk');
 
 var REGEX_NEWLINES = /^\n+/;
 
-function transformYamlMarkdown(sourceFolder, destinationFolder, renderFunction) {
-  sourceFolder = sourceFolder || 'src';
-  destinationFolder = destinationFolder || 'dest';
-  renderFunction = renderFunction
-    ? path.resolve(process.cwd(), renderFunction)
-    : path.resolve(process.cwd(), 'render');
-
-  var render = require(renderFunction);
-
+function transformYamlMarkdown(args) {
   var patterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
-      return path.join(sourceFolder, file);
+      return path.join(args.source, file);
     });
 
   var paths = globby.sync(patterns, { nodir: true });
 
-  paths.map(function(filePath) {
+  var html = paths.map(function(filePath) {
     var extension = path.extname(filePath);
-    var relativePath = path.relative(sourceFolder, filePath)
+    var relativePath = path.relative(args.source, filePath)
       .replace(RegExp(extension+'$'), '');
-    var destinationPath = path.join(destinationFolder, relativePath+'.html');
+    var destinationPath = path.join(args.destination, relativePath+'.html');
 
     var contents = fs.readFileSync(filePath, 'utf-8');
     var data = yaml.loadFront(contents, 'markdown');
     data.markdown = data.markdown.replace(REGEX_NEWLINES, '');
     data.path = relativePath;
 
-    render(data)
-      .then(writeFile(destinationPath))
-      .catch(console.error);
+    console.log(chalk.yellow('rendering '+filePath));
+    return args.render(data)
+      .then(writeFile(destinationPath));
   });
+
+  return Promise.all(html)
+    .then(function(htmlPaths) {
+      if (typeof args.postRender === 'function') {
+        console.log(chalk.yellow('post render…'));
+        return args.postRender(htmlPaths);
+      }
+      return Promise.resolve(htmlPaths);
+    })
+    .then(function() {
+      console.log(chalk.green('done!'));
+    });
 }
 
 function writeFile(destinationPath) {
   return function(html) {
     fs.outputFileSync(destinationPath, html);
+    return destinationPath;
   };
 }
 

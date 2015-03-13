@@ -14,11 +14,14 @@ Usage
 -----
 
 ```bash
-transform-yaml-markdown <sourceFolder> <destinationFolder> <pathToRenderFunction>
+transform-yaml-markdown <source> <destination> <render> [postRender]
 ```
 
-The __render function__ is a common.js function, that accepts a data object as an argument
-and returns a Promise that should fulfill with the rendered html. An example function can be found in the `test` folder. (it doesn’t render html though)
+The `render` and `postRender` functions are exported common.js functions.
+
+`render` gets a `data` object passed with all meta data and markdown from the current file. It should return a Promise that fulfills with the rendered HTML. An example function can be found in the `test` folder.
+
+`postRender` receives the paths of all rendered html files and should return a Promise that fulfills after a certain build step.
 
 LICENSE
 -------

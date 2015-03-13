@@ -6,40 +6,62 @@ var globby = require('globby');
 var transformYamlMarkdown = require('../');
 
 test('usage', function(is) {
-  is.plan(3);
+  is.plan(7);
 
   var sourcePatterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
-      return path.join('test', file);
-    });
-  var destinationPatterns = ['**/*.html']
-    .map(function(file) {
-      return path.join('test', file);
+      return path.join('test/src', file);
     });
 
   var sourceFiles = globby.sync(sourcePatterns, { nodir: true });
 
   fs.removeSync('test/dest');
-  transformYamlMarkdown('test/src', 'test/dest', 'test/render');
+  transformYamlMarkdown({
+    source: 'test/src',
+    destination: 'test/dest',
+    render: render,
+    postRender: postRender,
+  });
 
-  var destinationFiles = globby.sync(destinationPatterns, { nodir: true });
+  function render(data) {
+    is.ok('render called');
+    return Promise.resolve(JSON.stringify(data, null, 2));
+  }
 
-  is.equal(sourceFiles.length, destinationFiles.length);
-  is.equal(path.extname(destinationFiles[0]), '.html');
-  is.deepEqual(
-    sourceFiles.map(function(file) {
-      return file.replace('.md', '').replace('.markdown', '');
-    }),
-    destinationFiles.map(function(file) {
-      return file.replace('.html', '');
-    })
-  );
+  function postRender(htmlPaths) {
+    is.ok('postRender called');
+
+    is.equal(path.extname(htmlPaths[0]), '.html');
+    is.equal(sourceFiles.length, htmlPaths.length);
+    is.deepEqual(
+      sourceFiles.map(function(file) {
+        return file.replace('.md', '').replace('.markdown', '').replace('/src/', '/dest/');
+      }),
+      htmlPaths.map(function(file) {
+        return file.replace('.html', '');
+      })
+    );
+
+    return Promise.resolve(htmlPaths);
+  }
 });
 
 test('errors', function(is) {
-  is.plan(1);
+  is.plan(2);
 
   is.throws(function() {
-    transformYamlMarkdown('test/src', 'test/dest', 'not found');
-  });
+    transformYamlMarkdown({
+      source: 'test/src',
+      destination: 'test/dest',
+      render: ''
+    });
+  }, 'render !== function throws');
+
+  is.doesNotThrow(function() {
+    transformYamlMarkdown({
+      source: 'test/src',
+      destination: 'test/dest',
+      render: function() { return Promise.resolve('html'); }
+    });
+  }, 'valid render function');
 });
