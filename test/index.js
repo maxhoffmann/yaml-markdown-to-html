@@ -31,14 +31,14 @@ test('usage', function(is) {
   function postRender(htmlPaths) {
     is.ok('postRender called');
 
-    is.equal(path.extname(htmlPaths[0]), '.html');
+    is.equal(path.extname(htmlPaths[0].path), '.html');
     is.equal(sourceFiles.length, htmlPaths.length);
     is.deepEqual(
       sourceFiles.map(function(file) {
         return file.replace('.md', '').replace('.markdown', '').replace('/src/', '/dest/');
       }),
       htmlPaths.map(function(file) {
-        return file.replace('.html', '');
+        return file.path.replace('.html', '');
       })
     );
 

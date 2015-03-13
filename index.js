@@ -28,27 +28,29 @@ function transformYamlMarkdown(args) {
     data.path = relativePath;
 
     console.log(chalk.yellow('rendering '+filePath));
-    return args.render(data)
-      .then(writeFile(destinationPath));
+    return Promise.resolve(args.render(data)).then(writeFile(destinationPath, data));
   });
 
   return Promise.all(html)
-    .then(function(htmlPaths) {
+    .then(function(renderedFiles) {
       if (typeof args.postRender === 'function') {
         console.log(chalk.yellow('post render…'));
-        return args.postRender(htmlPaths);
+        return Promise.resolve(args.postRender(renderedFiles));
       }
-      return Promise.resolve(htmlPaths);
+      return renderedFiles;
     })
     .then(function() {
       console.log(chalk.green('done!'));
     });
 }
 
-function writeFile(destinationPath) {
+function writeFile(destinationPath, data) {
   return function(html) {
     fs.outputFileSync(destinationPath, html);
-    return destinationPath;
+    return {
+      path: destinationPath,
+      data: data
+    };
   };
 }
 
