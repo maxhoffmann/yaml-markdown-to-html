@@ -5,6 +5,7 @@ var globby = require('globby');
 var fs = require('fs-extra');
 var yaml = require('yaml-front-matter');
 var chalk = require('chalk');
+var cloneDeep = require('lodash/lang/cloneDeep');
 
 var REGEX_NEWLINES = /^\n+/;
 
@@ -28,14 +29,15 @@ function transformYamlMarkdown(args) {
     data.path = relativePath;
 
     console.log(chalk.yellow('rendering '+filePath));
-    return Promise.resolve(args.render(data)).then(writeFile(destinationPath, data));
+    return Promise.resolve(args.render(cloneDeep(data)))
+      .then(writeFile(destinationPath, data));
   });
 
   return Promise.all(html)
     .then(function(renderedFiles) {
       if (typeof args.postRender === 'function') {
         console.log(chalk.yellow('post render…'));
-        return Promise.resolve(args.postRender(renderedFiles));
+        return Promise.resolve(args.postRender(cloneDeep(renderedFiles)));
       }
       return renderedFiles;
     })

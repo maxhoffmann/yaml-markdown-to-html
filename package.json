@@ -1,6 +1,6 @@
 {
   "name": "transform-yaml-markdown",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "transform a folder of markdown files with yaml frontmatter to html",
   "main": "index.js",
   "bin": "bin/cli.js",
@@ -18,6 +18,7 @@
     "chalk": "^1.0.0",
     "fs-extra": "^0.16.5",
     "globby": "^1.2.0",
+    "lodash": "^3.5.0",
     "yaml-front-matter": "^3.2.3"
   },
   "keywords": [
