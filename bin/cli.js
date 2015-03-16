@@ -10,8 +10,10 @@ var params = {
   render: require(path.resolve(process.cwd(), args[2] || 'render'))
 };
 
-if ( args[3] ) {
-  params.postRender = require(path.resolve(process.cwd(), args[3]));
+try {
+  params.postRender = require(path.resolve(process.cwd(), args[3] || 'post-render'));
+} catch(e) {
+  params.postRender = false;
 }
 
 require('../')(params);
