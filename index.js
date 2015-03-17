@@ -17,21 +17,27 @@ function transformYamlMarkdown(args) {
 
   var paths = globby.sync(patterns, { nodir: true });
 
-  var html = paths.map(function(filePath) {
-    var extension = path.extname(filePath);
-    var relativePath = path.relative(args.source, filePath)
-      .replace(RegExp(extension+'$'), '');
-    var destinationPath = path.join(args.destination, relativePath+'.html');
+  var html = paths
+    .map(function(filePath) {
+      var extension = path.extname(filePath);
+      var relativePath = path.relative(args.source, filePath)
+        .replace(RegExp(extension+'$'), '');
+      var contents = fs.readFileSync(filePath, 'utf-8');
 
-    var contents = fs.readFileSync(filePath, 'utf-8');
-    var data = yaml.loadFront(contents, 'markdown');
-    data.markdown = data.markdown.replace(REGEX_NEWLINES, '');
-    data.path = relativePath;
+      var data = yaml.loadFront(contents, 'markdown');
+      data.markdown = data.markdown.replace(REGEX_NEWLINES, '');
+      data.path = relativePath;
+      return data;
+    })
+    .map(function(file, index, allFiles) {
+      var destinationPath = path.join(args.destination, file.path+'.html');
 
-    console.log(chalk.yellow('rendering '+filePath));
-    return Promise.resolve(args.render(cloneDeep(data)))
-      .then(writeFile(destinationPath, data));
-  });
+      console.log(chalk.yellow('rendering '+file.path));
+      var clonedFile = cloneDeep(file);
+      var clonedAllFiles = cloneDeep(allFiles);
+      return Promise.resolve(args.render(clonedFile, clonedAllFiles))
+        .then(writeFile(destinationPath, clonedFile));
+    });
 
   return Promise.all(html)
     .then(function(renderedFiles) {
@@ -49,10 +55,8 @@ function transformYamlMarkdown(args) {
 function writeFile(destinationPath, data) {
   return function(html) {
     fs.outputFileSync(destinationPath, html);
-    return {
-      path: destinationPath,
-      data: data
-    };
+    data.renderedPath = destinationPath;
+    return data;
   };
 }
 
