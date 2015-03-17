@@ -44,7 +44,7 @@ module.exports = function postRender(renderedFiles) {
 };
 ```
 
-By default the command tries to load `render.js` and `post-render.js` from the current directory if not specified.
+By default the command tries to load `render.js` and `post-render.js` from the current working directory if not specified.
 
 LICENSE
 -------
