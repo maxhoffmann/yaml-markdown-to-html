@@ -6,7 +6,7 @@ var globby = require('globby');
 var transformYamlMarkdown = require('../');
 
 test('usage', function(is) {
-  is.plan(7);
+  is.plan(24);
 
   var sourcePatterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
@@ -23,9 +23,12 @@ test('usage', function(is) {
     postRender: postRender,
   });
 
-  function render(data) {
-    is.ok('render called');
-    return Promise.resolve(JSON.stringify(data, null, 2));
+  function render(currentFile) {
+    is.pass('render called');
+    is.equal(typeof currentFile, 'object', 'currentFile is object');
+    is.ok('markdown' in currentFile, 'currentFile has markdown');
+    is.ok('path' in currentFile, 'currentFile has path');
+    return Promise.resolve(JSON.stringify(currentFile, null, 2));
   }
 
   function postRender(htmlPaths) {
