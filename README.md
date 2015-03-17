@@ -21,7 +21,7 @@ The `render` and `postRender` functions are exported common.js functions.
 
 `render` gets a `data` object passed with the meta data and raw markdown from the current file as the first argument and a collection of all files as the second one. It should return a Promise that fulfills with the rendered HTML.
 
-__render.js example__
+__example:__ `render.js`
 
 ```js
 module.exports = function render(currentFile, allFiles) {
@@ -35,7 +35,7 @@ module.exports = function render(currentFile, allFiles) {
 
 `postRender` receives a collection of rendered files including a `renderedPath` property and should also return a Promise that fulfills whenever your post render hook is done.
 
-__post-render.js example__
+__example:__ `post-render.js`
 
 ```js
 module.exports = function postRender(renderedFiles) {
