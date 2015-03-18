@@ -20,9 +20,7 @@ Usage
 transform-yaml-markdown <source> <destination> [render] [postRender]
 ```
 
-The `render` and `postRender` functions should be exported as common.js functions.
-
-`render` gets a `data` object passed with the meta data and raw markdown from the current file, a collection of all other files in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
+`render` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
 
 __example:__ `render.js`
 
@@ -38,7 +36,7 @@ module.exports = function(currentFile, filesInCurrentFolder, allFiles) {
 };
 ```
 
-`postRender` receives a collection of rendered files including a `renderedPath` property and should also return a Promise that fulfills whenever your post render hook is done.
+`postRender` receives a collection of rendered files including a `renderedPath` property after all files have been rendered and should return a Promise that fulfills whenever it is done.
 
 __example:__ `post-render.js`
 
