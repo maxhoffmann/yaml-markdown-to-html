@@ -10,7 +10,7 @@ var cloneDeep = require('lodash/lang/cloneDeep');
 var REGEX_NEWLINES = /^\n+/;
 var REGEX_NO_FOLDER = /^[^\/]+$/;
 
-function transformYamlMarkdown(args) {
+function yamlMarkdownToHtml(args) {
   var patterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
       return path.join(args.source, file);
@@ -68,4 +68,4 @@ function writeFile(destinationPath, data) {
   };
 }
 
-module.exports = transformYamlMarkdown;
+module.exports = yamlMarkdownToHtml;
