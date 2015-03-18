@@ -1,16 +1,16 @@
 {
-  "name": "transform-yaml-markdown",
-  "version": "5.0.0",
-  "description": "transform a folder of markdown files with yaml frontmatter to html",
+  "name": "yaml-markdown-to-html",
+  "version": "5.0.1",
+  "description": "render a folder of markdown files with yaml front matter to html",
   "main": "index.js",
   "bin": "bin/cli.js",
   "author": "Maximilian Hoffmann",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://maxhoffmann@github.com/maxhoffmann/transform-yaml-markdown"
+    "url": "https://maxhoffmann@github.com/maxhoffmann/yaml-markdown-to-html"
   },
-  "homepage": "https://github.com/maxhoffmann/transform-yaml-markdown",
+  "homepage": "https://github.com/maxhoffmann/yaml-markdown-to-html",
   "scripts": {
     "test": "tape test/ | tap-spec"
   },
@@ -24,8 +24,8 @@
   "keywords": [
     "markdown",
     "yaml",
-    "frontmatter",
-    "transform",
+    "front matter",
+    "html",
     "render"
   ],
   "devDependencies": {

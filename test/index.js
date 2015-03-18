@@ -3,13 +3,13 @@ var fs = require('fs-extra');
 var path = require('path');
 var test = require('tape');
 var globby = require('globby');
-var transformYamlMarkdown = require('../');
+var yamlMarkdownToHtml = require('../');
 
 test('errors', function(is) {
   is.plan(2);
 
   is.throws(function() {
-    transformYamlMarkdown({
+    yamlMarkdownToHtml({
       source: 'test/src',
       destination: 'test/dest',
       render: ''
@@ -17,7 +17,7 @@ test('errors', function(is) {
   }, 'render !== function throws');
 
   is.doesNotThrow(function() {
-    transformYamlMarkdown({
+    yamlMarkdownToHtml({
       source: 'test/src',
       destination: 'test/dest',
       render: function() { return Promise.resolve('html'); }
@@ -36,7 +36,7 @@ test('usage', function(is) {
   var sourceFiles = globby.sync(sourcePatterns, { nodir: true });
 
   fs.removeSync('test/dest');
-  transformYamlMarkdown({
+  yamlMarkdownToHtml({
     source: 'test/src',
     destination: 'test/dest',
     render: render,
