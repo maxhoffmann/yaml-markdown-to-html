@@ -3,6 +3,9 @@ transform-yaml-markdown [![version][1]][2] [![build][3]][4]
 
 transform a folder of markdown files with yaml frontmatter to html
 
+__Example:__
+![transformation example](example.png)
+
 Installation
 ------------
 
