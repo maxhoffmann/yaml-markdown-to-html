@@ -8,6 +8,7 @@ var chalk = require('chalk');
 var cloneDeep = require('lodash/lang/cloneDeep');
 
 var REGEX_NEWLINES = /^\n+/;
+var REGEX_NO_FOLDER = /^[^\/]+$/;
 
 function transformYamlMarkdown(args) {
   var patterns = ['**/*.md', '**/*.markdown']
@@ -30,12 +31,19 @@ function transformYamlMarkdown(args) {
       return data;
     })
     .map(function(file, index, allFiles) {
+      var currentFolder = path.join(file.path, '..');
+      var folderPattern = (currentFolder === '.')
+        ? REGEX_NO_FOLDER
+        : new RegExp('^'+currentFolder+'\/[^\/]+$');
+      var filesInCurrentFolder = allFiles.filter(function(testedFile) {
+        return folderPattern.test(testedFile.path) && testedFile.path !== file.path;
+      });
+
       var destinationPath = path.join(args.destination, file.path+'.html');
 
       console.log(chalk.yellow('rendering '+file.path));
       var clonedFile = cloneDeep(file);
-      var clonedAllFiles = cloneDeep(allFiles);
-      return Promise.resolve(args.render(clonedFile, clonedAllFiles))
+      return Promise.resolve(args.render(clonedFile, cloneDeep(filesInCurrentFolder), cloneDeep(allFiles)))
         .then(writeFile(destinationPath, clonedFile));
     });
 

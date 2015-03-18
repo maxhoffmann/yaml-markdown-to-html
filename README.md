@@ -17,17 +17,19 @@ Usage
 transform-yaml-markdown <source> <destination> [render] [postRender]
 ```
 
-The `render` and `postRender` functions are exported common.js functions.
+The `render` and `postRender` functions should be exported as common.js functions.
 
-`render` gets a `data` object passed with the meta data and raw markdown from the current file as the first argument and a collection of all files as the second one. It should return a Promise that fulfills with the rendered HTML.
+`render` gets a `data` object passed with the meta data and raw markdown from the current file, a collection of all other files in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
 
 __example:__ `render.js`
 
 ```js
-module.exports = function render(currentFile, allFiles) {
+module.exports = function(currentFile, filesInCurrentFolder, allFiles) {
   return Promise.resolve(
     '<code>'
       +JSON.stringify(currentFile, null, 2)+' of '+allFiles.length
+      +'\n'
+      +JSON.stringify(filesInCurrentFolder, null, 2)
     +'</code>'
   );
 };

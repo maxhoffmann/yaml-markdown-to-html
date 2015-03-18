@@ -26,7 +26,7 @@ test('errors', function(is) {
 });
 
 test('usage', function(is) {
-  is.plan(50);
+  is.plan(79);
 
   var sourcePatterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
@@ -43,7 +43,7 @@ test('usage', function(is) {
     postRender: postRender,
   });
 
-  function render(currentFile, allFiles) {
+  function render(currentFile, filesInCurrentFolder, allFiles) {
     is.pass('render called');
 
     is.equal(typeof currentFile, 'object', 'currentFile is object');
@@ -51,10 +51,36 @@ test('usage', function(is) {
     is.ok('path' in currentFile, 'currentFile has path');
 
     is.ok(Array.isArray(allFiles), 'allFiles is array');
-    is.equal(allFiles.length, 5, 'allFiles’ length is 5');
+    is.equal(allFiles.length, sourceFiles.length, 'allFiles’ length is same as sourceFiles');
     is.ok(allFiles.every(function(file) { return typeof file === 'object'; }), 'allFiles contains objects');
     is.ok('markdown' in allFiles[0], 'first item of allFiles has markdown');
     is.ok('path' in allFiles[0], 'first item of allFiles has path');
+
+    if (currentFile.path === 'index') {
+      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src');
+      is.equal(filesInCurrentFolder[0].path, 'test', 'other file in test/src is "test"');
+    }
+    if (currentFile.path === 'test') {
+      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src');
+      is.equal(filesInCurrentFolder[0].path, 'index', 'other file in test/src is "index"');
+    }
+    if (currentFile.path === 'folder/another') {
+      is.equal(filesInCurrentFolder.length, 2, 'two other files in test/src/folder');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'folder/empty';
+      }), 'one of the files in test/src/folder is "empty"');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'folder/yaml-only';
+      }), 'one of the files in test/src/folder is "yaml-only"');
+    }
+    if (currentFile.path === 'folder/another_folder/deeply-nested') {
+      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src/folder/another_folder');
+      is.equal(filesInCurrentFolder[0].path, 'folder/another_folder/another-deeply-nested', 'other file in test/src/folder/another_folder is "another-deeply-nested"');
+    }
+    if (currentFile.path === 'folder/another_folder/another-deeply-nested') {
+      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src/folder/another_folder');
+      is.equal(filesInCurrentFolder[0].path, 'folder/another_folder/deeply-nested', 'other file in test/src/folder/another_folder is "deeply-nested"');
+    }
 
     return Promise.resolve(JSON.stringify(currentFile, null, 2));
   }
