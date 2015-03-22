@@ -45,7 +45,8 @@ function yamlMarkdownToHtml(args) {
     var currentFolder = path.join(file.path, '..');
     var folderPattern = (currentFolder === '.')
       ? REGEX_NO_FOLDER
-      : new RegExp('^'+currentFolder+'\/[^\/]+$');
+      : new RegExp('^'+currentFolder+'\/[^\/]+(\/index)?$');
+
     var filesInCurrentFolder = allFiles.filter(function(testedFile) {
       return folderPattern.test(testedFile.path) && testedFile.path !== file.path;
     });
