@@ -9,7 +9,7 @@ var chalk = require('chalk');
 var cloneDeep = require('lodash/lang/cloneDeep');
 
 var REGEX_NEWLINES = /^\n+/;
-var REGEX_NO_FOLDER = /^[^\/]+$/;
+var REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 function yamlMarkdownToHtml(args) {
   var patterns = ['**/*.md', '**/*.markdown']

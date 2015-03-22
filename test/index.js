@@ -26,7 +26,7 @@ test('errors', function(is) {
 });
 
 test('usage', function(is) {
-  is.plan(94);
+  is.plan(106);
 
   var sourcePatterns = ['**/*.md', '**/*.markdown']
     .map(function(file) {
@@ -57,21 +57,34 @@ test('usage', function(is) {
     is.ok('path' in allFiles[0], 'first item of allFiles has path');
 
     if (currentFile.path === 'index') {
-      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src');
-      is.equal(filesInCurrentFolder[0].path, 'test', 'other file in test/src is "test"');
+      is.equal(filesInCurrentFolder.length, 2, 'two other file in test/src');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'test';
+      }), 'one of the files in test/src is "test"');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'folder/index';
+      }), 'one of the files in test/src is "folder/index"');
     }
     if (currentFile.path === 'test') {
-      is.equal(filesInCurrentFolder.length, 1, 'one other file in test/src');
-      is.equal(filesInCurrentFolder[0].path, 'index', 'other file in test/src is "index"');
+      is.equal(filesInCurrentFolder.length, 2, 'two other file in test/src');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'index';
+      }), 'one of the files in test/src is "index"');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'folder/index';
+      }), 'one of the files in test/src is "folder/index"');
     }
     if (currentFile.path === 'folder/another') {
-      is.equal(filesInCurrentFolder.length, 3, 'three other files in test/src/folder');
+      is.equal(filesInCurrentFolder.length, 4, 'four other files in test/src/folder');
       is.ok(filesInCurrentFolder.some(function(file) {
         return file.path === 'folder/empty';
       }), 'one of the files in test/src/folder is "empty"');
       is.ok(filesInCurrentFolder.some(function(file) {
         return file.path === 'folder/yaml-only';
       }), 'one of the files in test/src/folder is "yaml-only"');
+      is.ok(filesInCurrentFolder.some(function(file) {
+        return file.path === 'folder/index';
+      }), 'one of the files in test/src/folder is "index"');
       is.ok(filesInCurrentFolder.some(function(file) {
         return file.path === 'folder/another_folder/index';
       }), 'one of the files in test/src/folder is "another_folder/index"');
