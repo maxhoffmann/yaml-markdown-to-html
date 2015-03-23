@@ -19,17 +19,17 @@ var params = {
 
 try {
   params.postRender = require(path.resolve(process.cwd(), args[3] || 'post-render'));
-} catch(e) {
+} catch(error) {
   params.postRender = false;
 }
 
 yamlMarkdownToHtml(params);
 
 if (watching) {
-  var chokidar = require('chokidar');
-  var watcher = chokidar.watch(params.files);
-  watcher.on('change', function(filePath) {
-    params.files = filePath;
-    yamlMarkdownToHtml(params);
-  });
+  require('chokidar')
+    .watch(params.files)
+    .on('change', function(filePath) {
+      params.files = filePath;
+      yamlMarkdownToHtml(params);
+    });
 }
