@@ -17,7 +17,11 @@ Usage
 -----
 
 ```bash
+# build
 yaml-markdown-to-html <source> <destination> [render] [postRender]
+
+# watch
+yaml-markdown-to-html --watch <source> <destination> [render] [postRender]
 ```
 
 `render` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory plus index pages of folders in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.

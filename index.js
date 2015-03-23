@@ -12,12 +12,12 @@ var REGEX_NEWLINES = /^\n+/;
 var REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 function yamlMarkdownToHtml(args) {
-  var patterns = ['**/*.md', '**/*.markdown']
+  args.files = args.files || ['**/*.md', '**/*.markdown']
     .map(function(file) {
       return path.join(args.source, file);
     });
 
-  var files = globby.sync(patterns, { nodir: true });
+  var files = globby.sync(args.files, { nodir: true });
 
   var html = files
     .map(getFileContents)

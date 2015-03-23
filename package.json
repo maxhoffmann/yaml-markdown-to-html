@@ -1,6 +1,6 @@
 {
   "name": "yaml-markdown-to-html",
-  "version": "6.0.1",
+  "version": "6.1.0",
   "description": "render a folder of markdown files with yaml front matter to html",
   "main": "index.js",
   "bin": "bin/cli",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "chalk": "^1.0.0",
+    "chokidar": "^1.0.0-rc4",
     "fs-extra": "^0.16.5",
     "globby": "^1.2.0",
     "lodash": "^3.5.0",
