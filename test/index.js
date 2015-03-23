@@ -123,6 +123,6 @@ test('usage', function(is) {
       })
     );
 
-    return Promise.resolve(htmlPaths);
+    return Promise.resolve(renderedFiles);
   }
 });
