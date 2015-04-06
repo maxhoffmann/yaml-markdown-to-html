@@ -39,7 +39,8 @@ if (watching) {
 
   require('chokidar')
     .watch(transformFolder)
-    .on('change', function() {
+    .on('change', function(filePath) {
+      delete require.cache[filePath];
       yamlMarkdownToHtml(assign({}, params, {
         files: globby.sync(markdownFiles, { nodir: true }),
       }));
