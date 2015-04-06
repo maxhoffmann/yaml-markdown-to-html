@@ -35,7 +35,7 @@ test('errors', function(is) {
 });
 
 test('usage', function(is) {
-  is.plan(106);
+  is.plan(196);
 
   fs.removeSync('test/html');
   yamlMarkdownToHtml({
@@ -52,12 +52,24 @@ test('usage', function(is) {
     is.equal(typeof currentFile, 'object', 'currentFile is object');
     is.ok('markdown' in currentFile, 'currentFile has markdown');
     is.ok('path' in currentFile, 'currentFile has path');
+    is.ok('updatedAt' in currentFile, 'currentFile has updatedAt');
+    is.ok('createdAt' in currentFile, 'currentFile has createdAt');
+
+    is.ok(Array.isArray(filesInCurrentFolder), 'folder collection is array');
+    is.ok(filesInCurrentFolder.every(function(file) { return typeof file === 'object'; }), 'folder collection contains objects');
+    is.ok('markdown' in filesInCurrentFolder[0], 'first item of folder collection has markdown');
+    is.ok('path' in filesInCurrentFolder[0], 'first item of folder collection has path');
+    is.ok('updatedAt' in filesInCurrentFolder[0], 'first item of folder collection has updatedAt');
+    is.ok('createdAt' in filesInCurrentFolder[0], 'first item of folder collection has createdAt');
 
     is.ok(Array.isArray(allFiles), 'allFiles is array');
     is.equal(allFiles.length, sourceFiles.length, 'allFiles’ length is same as sourceFiles');
     is.ok(allFiles.every(function(file) { return typeof file === 'object'; }), 'allFiles contains objects');
     is.ok('markdown' in allFiles[0], 'first item of allFiles has markdown');
     is.ok('path' in allFiles[0], 'first item of allFiles has path');
+    is.ok('updatedAt' in allFiles[0], 'first item of allFiles has updatedAt');
+    is.ok('createdAt' in allFiles[0], 'first item of allFiles has createdAt');
+
 
     if (currentFile.path === 'index') {
       is.equal(filesInCurrentFolder.length, 2, 'two other file in test/markdown');

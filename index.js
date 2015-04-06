@@ -26,10 +26,13 @@ function yamlMarkdownToHtml(args) {
     var relativePath = path.relative(args.markdown, filePath)
       .replace(new RegExp(extension+'$'), '');
     var contents = fs.readFileSync(filePath, 'utf-8');
+    var stats = fs.statSync(filePath);
 
     var data = yaml.loadFront(contents, 'markdown');
     data.markdown = data.markdown.replace(REGEX_NEWLINES, '');
     data.path = relativePath;
+    data.updatedAt = stats.mtime;
+    data.createdAt = stats.birthtime;
     return data;
   }
 
