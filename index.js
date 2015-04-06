@@ -2,7 +2,6 @@
 "use strict";
 var path = require('path');
 
-var globby = require('globby');
 var fs = require('fs-extra');
 var yaml = require('yaml-front-matter');
 var chalk = require('chalk');
@@ -12,14 +11,7 @@ var REGEX_NEWLINES = /^\n+/;
 var REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 function yamlMarkdownToHtml(args) {
-  args.files = args.files || ['**/*.md', '**/*.markdown']
-    .map(function(file) {
-      return path.join(args.source, file);
-    });
-
-  var files = globby.sync(args.files, { nodir: true });
-
-  var html = files
+  var html = (args.files || [])
     .map(getFileContents)
     .map(callRender);
 
@@ -31,8 +23,8 @@ function yamlMarkdownToHtml(args) {
 
   function getFileContents(filePath) {
     var extension = path.extname(filePath);
-    var relativePath = path.relative(args.source, filePath)
-      .replace(RegExp(extension+'$'), '');
+    var relativePath = path.relative(args.markdown, filePath)
+      .replace(new RegExp(extension+'$'), '');
     var contents = fs.readFileSync(filePath, 'utf-8');
 
     var data = yaml.loadFront(contents, 'markdown');
@@ -51,7 +43,7 @@ function yamlMarkdownToHtml(args) {
       return folderPattern.test(testedFile.path) && testedFile.path !== file.path;
     });
 
-    var destinationPath = path.join(args.destination, file.path+'.html');
+    var destinationPath = path.join(args.html, file.path+'.html');
 
     console.log(chalk.yellow('rendering '+file.path));
     var clonedFile = cloneDeep(file);

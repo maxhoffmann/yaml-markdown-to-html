@@ -1,27 +1,30 @@
 #!/usr/bin/env node
 "use strict";
 var path = require('path');
+var globby = require('globby');
+var assign = require('lodash/object/assign');
 var yamlMarkdownToHtml = require('../');
 
-var args = process.argv.slice(2);
-var watching = false;
-
-if (['-w', '--watch'].indexOf(args[0]) > -1) {
-  watching = true;
-  args = args.slice(1);
-}
+var watching = ['-w', '--watch'].indexOf(process.argv[2]) > -1;
+var args = watching ? process.argv.slice(3) : process.argv.slice(2);
+var transformFolder = path.resolve(process.cwd(), args[2] || 'transform');
 
 var params = {
-  source: args[0] || 'src',
-  destination: args[1] || 'dest',
-  render: require(path.resolve(process.cwd(), args[2] || 'render'))
+  markdown: args[0] || 'markdown',
+  html: args[1] || 'html',
+  render: require(path.join(transformFolder, 'render')),
+  postRender: false
 };
 
+var markdownFiles = [
+  path.join(params.markdown, '**/*.md'),
+  path.join(params.markdown, '**/*.markdown')
+];
+
+params.files = globby.sync(markdownFiles, { nodir: true });
 try {
-  params.postRender = require(path.resolve(process.cwd(), args[3] || 'post-render'));
-} catch(error) {
-  params.postRender = false;
-}
+  params.postRender = require(path.join(transformFolder, 'post-render'));
+} catch(error) {}
 
 yamlMarkdownToHtml(params);
 
@@ -29,7 +32,16 @@ if (watching) {
   require('chokidar')
     .watch(params.files)
     .on('change', function(filePath) {
-      params.files = filePath;
-      yamlMarkdownToHtml(params);
+      yamlMarkdownToHtml(assign({}, params, {
+        files: [filePath]
+      }));
+    });
+
+  require('chokidar')
+    .watch(transformFolder)
+    .on('change', function() {
+      yamlMarkdownToHtml(assign({}, params, {
+        files: globby.sync(markdownFiles, { nodir: true }),
+      }));
     });
 }

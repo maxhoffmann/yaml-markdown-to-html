@@ -16,17 +16,21 @@ npm i yaml-markdown-to-html
 Usage
 -----
 
+The command line interface accepts three folders:
+
 ```bash
 # build
-yaml-markdown-to-html <source> <destination> [render] [postRender]
+yaml-markdown-to-html <markdown> <html> <transform>
 
 # watch
-yaml-markdown-to-html --watch <source> <destination> [render] [postRender]
+yaml-markdown-to-html --watch <markdown> <html> <transform>
 ```
 
-`render` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory plus index pages of folders in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
+`<markdown>` is the source folder that contains the markdown files to render. `<html>` is the destination folder that will contain the rendered html files. `<transform>` is the folder, which contains at least a `render.js` and may contain a `post-render.js`, as well as other files that are used to render the markdown files to html. By default the CLI will look for a folder with the same name as the argument if omitted.
 
-__example:__ `render.js`
+`transform/render.js` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory plus index pages of folders in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
+
+__example:__ `transform/render.js`
 
 ```js
 module.exports = function(currentFile, filesInCurrentFolder, allFiles) {
@@ -40,9 +44,9 @@ module.exports = function(currentFile, filesInCurrentFolder, allFiles) {
 };
 ```
 
-`postRender` receives a collection of rendered files including a `renderedPath` property after all files have been rendered and should return a Promise that fulfills whenever it is done.
+`transform/postRender.js` receives a collection of rendered files including a `renderedPath` property after all files have been rendered and should return a Promise that fulfills whenever it is done.
 
-__example:__ `post-render.js`
+__example:__ `transform/post-render.js`
 
 ```js
 module.exports = function postRender(renderedFiles) {
@@ -50,8 +54,6 @@ module.exports = function postRender(renderedFiles) {
   return Promise.resolve(renderedFiles);
 };
 ```
-
-By default the command tries to load `render.js` and `post-render.js` from the current working directory if not specified.
 
 LICENSE
 -------
