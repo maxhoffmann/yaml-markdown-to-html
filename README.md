@@ -1,4 +1,4 @@
-yaml-markdown-to-html [![version][1]][2] [![build][3]][4]
+yaml-markdown-to-html [![version][1]][2]
 =======================
 
 render a folder of markdown files with yaml front matter to html
@@ -10,7 +10,8 @@ Installation
 ------------
 
 ```bash
-npm i yaml-markdown-to-html
+yarn add yaml-markdown-to-html --dev
+npm i yaml-markdown-to-html --save-dev
 ```
 
 Usage
@@ -33,7 +34,7 @@ yaml-markdown-to-html --watch <markdown> <html> <transform>
 __example:__ `transform/render.js`
 
 ```js
-module.exports = function(currentFile, filesInCurrentFolder, allFiles) {
+module.exports = function render(currentFile, filesInCurrentFolder, allFiles) {
   return Promise.resolve(
     '<code>'
       +JSON.stringify(currentFile, null, 2)+' of '+allFiles.length
@@ -62,5 +63,3 @@ The MIT License (MIT) Maximilian Hoffmann
 
 [1]: http://img.shields.io/npm/v/yaml-markdown-to-html.svg?style=flat
 [2]: https://www.npmjs.org/package/yaml-markdown-to-html
-[3]: http://img.shields.io/travis/maxhoffmann/yaml-markdown-to-html.svg?style=flat
-[4]: https://travis-ci.org/maxhoffmann/yaml-markdown-to-html
