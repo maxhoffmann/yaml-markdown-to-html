@@ -1,6 +1,6 @@
 {
   "name": "yaml-markdown-to-html",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "description": "render a folder of markdown files with yaml front matter to html",
   "main": "index.js",
   "bin": "bin/cli",

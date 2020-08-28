@@ -1,48 +1,52 @@
 #!/usr/bin/env node
 "use strict";
-var path = require('path');
-var globby = require('globby');
-var assign = require('lodash/object/assign');
-var yamlMarkdownToHtml = require('../');
+var path = require("path");
+var globby = require("globby");
+var { assign } = require("lodash");
+var yamlMarkdownToHtml = require("../");
 
-var watching = ['-w', '--watch'].indexOf(process.argv[2]) > -1;
+var watching = ["-w", "--watch"].indexOf(process.argv[2]) > -1;
 var args = watching ? process.argv.slice(3) : process.argv.slice(2);
-var transformFolder = path.resolve(process.cwd(), args[2] || 'transform');
+var transformFolder = path.resolve(process.cwd(), args[2] || "transform");
 
 var params = {
-  markdown: args[0] || 'markdown',
-  html: args[1] || 'html',
-  render: require(path.join(transformFolder, 'render')),
-  postRender: false
+  markdown: args[0] || "markdown",
+  html: args[1] || "html",
+  render: require(path.join(transformFolder, "render")),
+  postRender: false,
 };
 
 var markdownFiles = [
-  path.join(params.markdown, '**/*.md'),
-  path.join(params.markdown, '**/*.markdown')
+  path.join(params.markdown, "**/*.md"),
+  path.join(params.markdown, "**/*.markdown"),
 ];
 
 params.files = globby.sync(markdownFiles, { nodir: true });
 try {
-  params.postRender = require(path.join(transformFolder, 'post-render'));
-} catch(error) {}
+  params.postRender = require(path.join(transformFolder, "post-render"));
+} catch (error) {}
 
 yamlMarkdownToHtml(params);
 
 if (watching) {
-  require('chokidar')
+  require("chokidar")
     .watch(params.files)
-    .on('change', function(filePath) {
-      yamlMarkdownToHtml(assign({}, params, {
-        files: [filePath]
-      }));
+    .on("change", function (filePath) {
+      yamlMarkdownToHtml(
+        assign({}, params, {
+          files: [filePath],
+        })
+      );
     });
 
-  require('chokidar')
+  require("chokidar")
     .watch(transformFolder)
-    .on('change', function(filePath) {
+    .on("change", function (filePath) {
       delete require.cache[filePath];
-      yamlMarkdownToHtml(assign({}, params, {
-        files: globby.sync(markdownFiles, { nodir: true }),
-      }));
+      yamlMarkdownToHtml(
+        assign({}, params, {
+          files: globby.sync(markdownFiles, { nodir: true }),
+        })
+      );
     });
 }
