@@ -1,52 +1,27 @@
 #!/usr/bin/env node
 "use strict";
-var path = require("path");
-var globby = require("globby");
-var { assign } = require("lodash");
-var yamlMarkdownToHtml = require("../");
+const path = require("path");
+const globby = require("globby");
+const yamlMarkdownToHtml = require("../");
 
-var watching = ["-w", "--watch"].indexOf(process.argv[2]) > -1;
-var args = watching ? process.argv.slice(3) : process.argv.slice(2);
-var transformFolder = path.resolve(process.cwd(), args[2] || "transform");
+const args = process.argv.slice(2);
+const renderFolder = path.resolve(process.cwd(), args[2] || "render");
 
-var params = {
-  markdown: args[0] || "markdown",
-  html: args[1] || "html",
-  render: require(path.join(transformFolder, "render")),
+const params = {
+  markdown: args[0] || "content",
+  html: args[1] || "public",
+  render: require(path.join(renderFolder, "render")),
   postRender: false,
 };
 
-var markdownFiles = [
+const markdownFiles = [
   path.join(params.markdown, "**/*.md"),
   path.join(params.markdown, "**/*.markdown"),
 ];
 
-params.files = globby.sync(markdownFiles, { nodir: true });
+params.files = globby.sync(markdownFiles, { onlyFiles: true });
 try {
-  params.postRender = require(path.join(transformFolder, "post-render"));
+  params.postRender = require(path.join(renderFolder, "post-render"));
 } catch (error) {}
 
 yamlMarkdownToHtml(params);
-
-if (watching) {
-  require("chokidar")
-    .watch(params.files)
-    .on("change", function (filePath) {
-      yamlMarkdownToHtml(
-        assign({}, params, {
-          files: [filePath],
-        })
-      );
-    });
-
-  require("chokidar")
-    .watch(transformFolder)
-    .on("change", function (filePath) {
-      delete require.cache[filePath];
-      yamlMarkdownToHtml(
-        assign({}, params, {
-          files: globby.sync(markdownFiles, { nodir: true }),
-        })
-      );
-    });
-}

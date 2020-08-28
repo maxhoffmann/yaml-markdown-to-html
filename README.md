@@ -20,18 +20,18 @@ Usage
 The command line interface accepts three folders:
 
 ```bash
-# build
-yaml-markdown-to-html <markdown> <html> <transform>
-
-# watch
-yaml-markdown-to-html --watch <markdown> <html> <transform>
+yaml-markdown-to-html <content> <public> <render>
 ```
 
-`<markdown>` is the source folder that contains the markdown files to render. `<html>` is the destination folder that will contain the rendered html files. `<transform>` is the folder, which contains at least a `render.js` and may contain a `post-render.js`, as well as other files that are used to render the markdown files to html. By default the CLI will look for a folder with the same name as the argument if omitted.
+`<content>` is the source folder that contains the markdown files to render
 
-`transform/render.js` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory plus index pages of folders in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
+`<public>` is the destination folder that will contain the rendered html files
 
-__example:__ `transform/render.js`
+`<render>` is the folder, which contains at least a `render.js` and may contain a `post-render.js`, as well as other files that are used to render the markdown files to html. By default the CLI will look for a folder with the same name as the argument if omitted.
+
+`render/render.js` is called once per file and gets an object with its parsed meta data and the raw markdown string, a collection of all other files in the current directory plus index pages of folders in the current directory and a collection of all files. It should return a Promise that fulfills with the rendered HTML.
+
+__example:__ `render/render.js`
 
 ```js
 module.exports = function render(currentFile, filesInCurrentFolder, allFiles) {
@@ -45,9 +45,9 @@ module.exports = function render(currentFile, filesInCurrentFolder, allFiles) {
 };
 ```
 
-`transform/postRender.js` receives a collection of rendered files including a `renderedPath` property after all files have been rendered and should return a Promise that fulfills whenever it is done.
+`render/postRender.js` receives a collection of rendered files including a `renderedPath` property after all files have been rendered and should return a Promise that fulfills whenever it is done.
 
-__example:__ `transform/post-render.js`
+__example:__ `render/post-render.js`
 
 ```js
 module.exports = function postRender(renderedFiles) {
