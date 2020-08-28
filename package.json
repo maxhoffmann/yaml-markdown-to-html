@@ -15,12 +15,12 @@
     "test": "tape test/ | tap-spec"
   },
   "dependencies": {
-    "chalk": "^1.0.0",
-    "chokidar": "^1.0.0-rc4",
-    "fs-extra": "^0.16.5",
-    "globby": "^1.2.0",
-    "lodash": "^4.17.15",
-    "yaml-front-matter": "^3.2.3"
+    "chalk": "^4.1.0",
+    "chokidar": "^3.4.2",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "lodash": "^4.17.20",
+    "yaml-front-matter": "^4.1.0"
   },
   "keywords": [
     "markdown",
