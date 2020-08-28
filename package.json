@@ -1,6 +1,6 @@
 {
   "name": "yaml-markdown-to-html",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "description": "render a folder of markdown files with yaml front matter to html",
   "main": "index.js",
   "bin": "bin/cli",
@@ -12,15 +12,15 @@
   },
   "homepage": "https://github.com/maxhoffmann/yaml-markdown-to-html",
   "scripts": {
-    "test": "tape test/ | tap-spec"
+    "test": "tape 'test/**/*.js' | tap-spec"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "chokidar": "^3.4.2",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "lodash": "^4.17.20",
-    "yaml-front-matter": "^4.1.0"
+    "chalk": "^1.0.0",
+    "chokidar": "^1.0.0-rc4",
+    "fs-extra": "^0.16.5",
+    "globby": "^1.2.0",
+    "lodash": "^4.17.15",
+    "yaml-front-matter": "^3.2.3"
   },
   "keywords": [
     "markdown",
@@ -30,7 +30,7 @@
     "render"
   ],
   "devDependencies": {
-    "tap-spec": "^2.2.2",
-    "tape": "^3.5.0"
+    "tap-spec": "^5.0.0",
+    "tape": "^5.0.1"
   }
 }
