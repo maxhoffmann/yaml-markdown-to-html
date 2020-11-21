@@ -11,7 +11,10 @@ var REGEX_NEWLINES = /^\n+/;
 var REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 function yamlMarkdownToHtml(args) {
-  var html = (args.files || []).map(getFileContents).map(callRender);
+  var html = (args.files || [])
+    .map(getFileContents)
+    .filter(Boolean)
+    .map(callRender);
 
   return Promise.all(html)
     .then(callPostRender)
@@ -20,19 +23,24 @@ function yamlMarkdownToHtml(args) {
     });
 
   function getFileContents(filePath) {
-    var extension = path.extname(filePath);
-    var relativePath = path
-      .relative(args.markdown, filePath)
-      .replace(new RegExp(extension + "$"), "");
-    var contents = fs.readFileSync(filePath, "utf-8");
-    var stats = fs.statSync(filePath);
+    try {
+      var extension = path.extname(filePath);
+      var relativePath = path
+        .relative(args.markdown, filePath)
+        .replace(new RegExp(extension + "$"), "");
+      var contents = fs.readFileSync(filePath, "utf-8");
+      var stats = fs.statSync(filePath);
 
-    var data = yaml.loadFront(contents, "markdown");
-    data.markdown = data.markdown.replace(REGEX_NEWLINES, "");
-    data.path = relativePath;
-    data.updatedAt = stats.mtime;
-    data.createdAt = stats.birthtime;
-    return data;
+      var data = yaml.loadFront(contents, "markdown");
+      data.markdown = data.markdown.replace(REGEX_NEWLINES, "");
+      data.path = relativePath;
+      data.updatedAt = stats.mtime;
+      data.createdAt = stats.birthtime;
+      return data;
+    } catch (error) {
+      console.error(`skipped ${filePath}: ${error}`);
+      return false;
+    }
   }
 
   function callRender(file, index, allFiles) {
