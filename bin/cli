@@ -26,7 +26,7 @@ async function init() {
     params.postRenderFile = require(path.join(renderFolder, "post-render"));
   } catch {}
 
-  yamlMarkdownToHtml(params);
+  await yamlMarkdownToHtml(params);
 }
 
 init();
