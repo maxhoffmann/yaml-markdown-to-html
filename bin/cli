@@ -8,22 +8,22 @@ const args = process.argv.slice(2);
 const renderFolder = path.resolve(process.cwd(), args[2] || "render");
 
 const params = {
-  markdown: args[0] || "content",
-  html: args[1] || "public",
-  render: require(path.join(renderFolder, "render")),
-  postRender: false,
+  contentFolder: args[0] || "content",
+  publicFolder: args[1] || "public",
+  renderFile: require(path.join(renderFolder, "render")),
+  postRenderFile: false,
 };
 
 const markdownFiles = [
-  path.join(params.markdown, "**/*.md"),
-  path.join(params.markdown, "**/*.markdown"),
+  path.join(params.contentFolder, "**/*.md"),
+  path.join(params.contentFolder, "**/*.markdown"),
 ];
 
 async function init() {
   params.files = await globby(markdownFiles, { onlyFiles: true });
 
   try {
-    params.postRender = require(path.join(renderFolder, "post-render"));
+    params.postRenderFile = require(path.join(renderFolder, "post-render"));
   } catch {}
 
   yamlMarkdownToHtml(params);

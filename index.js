@@ -11,26 +11,34 @@ const REGEX_NEWLINES = /^\n+/;
 const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 async function yamlMarkdownToHtml(cliParams) {
-  const html = (cliParams.files || [])
-    .map(getFileContents(cliParams.markdown))
-    .filter(Boolean)
-    .map(callRender(cliParams.html, cliParams.render));
+  const fileContents = await Promise.all(
+    (cliParams.files || []).map(getFileContents(cliParams.contentFolder))
+  );
 
-  return Promise.all(html)
-    .then(callPostRender(cliParams.postRender))
-    .then(() => console.log(chalk.green("done!")));
+  const withoutSkippedFiles = fileContents.filter(Boolean);
+
+  const renderedFiles = await Promise.all(
+    withoutSkippedFiles.map(
+      renderEachFile(cliParams.publicFolder, cliParams.renderFile)
+    )
+  );
+
+  await callPostRender(cliParams.postRenderFile, renderedFiles);
+
+  console.log(chalk.green("✅ done!"));
 }
 
 function getFileContents(markdownFolder) {
-  return (filePath) => {
+  return async (filePath) => {
     try {
       const extension = path.extname(filePath);
       const relativePath = path
         .relative(markdownFolder, filePath)
         .replace(new RegExp(extension + "$"), "");
+
       console.log(chalk.yellow("👓 reading " + filePath));
-      const contents = fs.readFileSync(filePath, "utf-8");
-      const stats = fs.statSync(filePath);
+      const contents = await fs.readFile(filePath, "utf-8");
+      const stats = await fs.stat(filePath);
 
       const data = yaml.loadFront(contents, "markdown");
       data.markdown = data.markdown.replace(REGEX_NEWLINES, "");
@@ -39,14 +47,14 @@ function getFileContents(markdownFolder) {
       data.createdAt = stats.birthtime;
       return data;
     } catch (error) {
-      console.error(`skipped ${filePath}: ${error}`);
+      console.error(`⏩ skipped ${filePath}: ${error}`);
       return false;
     }
   };
 }
 
-function callRender(htmlFolder, renderFunction) {
-  return (file, index, allFiles) => {
+function renderEachFile(htmlFolder, renderFunction) {
+  return async (file, _, allFiles) => {
     const currentFolder = path.join(file.path, "..");
     const folderPattern =
       currentFolder === "."
@@ -60,36 +68,29 @@ function callRender(htmlFolder, renderFunction) {
     });
 
     const destinationPath = path.join(htmlFolder, file.path + ".html");
-
     const clonedFile = cloneDeep(file);
+
     console.log(chalk.yellow("⚙️ rendering " + file.path));
-    return Promise.resolve(
-      renderFunction(
-        clonedFile,
-        cloneDeep(filesInCurrentFolder),
-        cloneDeep(allFiles)
-      )
-    ).then(writeFile(destinationPath, clonedFile));
+    const renderedHtml = await renderFunction(
+      clonedFile,
+      cloneDeep(filesInCurrentFolder),
+      cloneDeep(allFiles)
+    );
+
+    console.log(chalk.yellow("🖨 writing " + clonedFile.path));
+    await fs.outputFile(destinationPath, renderedHtml);
+    clonedFile.renderedPath = destinationPath;
+
+    return clonedFile;
   };
 }
 
-function writeFile(destinationPath, file) {
-  return function (renderedHtml) {
-    console.log(chalk.yellow("🖨 writing " + file.path));
-    fs.outputFileSync(destinationPath, renderedHtml);
-    file.renderedPath = destinationPath;
-    return file;
-  };
-}
-
-function callPostRender(postRenderFunction) {
-  return (renderedFiles) => {
-    if (typeof postRenderFunction === "function") {
-      console.log(chalk.yellow("🏁 post render…"));
-      return Promise.resolve(postRenderFunction(cloneDeep(renderedFiles)));
-    }
-    return renderedFiles;
-  };
+async function callPostRender(postRenderFunction, renderedFiles) {
+  if (typeof postRenderFunction === "function") {
+    console.log(chalk.yellow("🏁 post render…"));
+    postRenderFunction(cloneDeep(renderedFiles));
+  }
+  return renderedFiles;
 }
 
 module.exports = yamlMarkdownToHtml;

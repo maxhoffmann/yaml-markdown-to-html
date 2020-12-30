@@ -16,10 +16,10 @@ test("errors", async function (is) {
 
   try {
     await yamlMarkdownToHtml({
-      markdown: "test/content",
-      html: "test/public",
+      contentFolder: "test/content",
+      publicFolder: "test/public",
       files: sourceFiles,
-      render: "",
+      renderFile: "",
     });
     is.fail("missing render function doesn’t error");
   } catch (error) {
@@ -28,10 +28,10 @@ test("errors", async function (is) {
 
   try {
     await yamlMarkdownToHtml({
-      markdown: "test/content",
-      html: "test/public",
+      contentFolder: "test/content",
+      publicFolder: "test/public",
       files: sourceFiles,
-      render: function () {
+      renderFile: function () {
         return Promise.resolve("html");
       },
     });
@@ -47,11 +47,11 @@ test("usage", async function (is) {
   await fs.remove("test/public");
 
   await yamlMarkdownToHtml({
-    markdown: "test/content",
-    html: "test/public",
+    contentFolder: "test/content",
+    publicFolder: "test/public",
     files: sourceFiles,
-    render: render,
-    postRender: postRender,
+    renderFile: render,
+    postRenderFile: postRender,
   });
 
   function render(currentFile, filesInCurrentFolder, allFiles) {
@@ -239,6 +239,7 @@ test("usage", async function (is) {
     );
     is.equal(path.extname(renderedFiles[0].renderedPath), ".html");
     is.equal(sourceFiles.length, renderedFiles.length);
+
     is.deepEqual(
       sourceFiles.map(function (file) {
         return file
