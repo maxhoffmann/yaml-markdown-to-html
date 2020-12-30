@@ -1,17 +1,17 @@
 /* eslint no-console: 0 */
 "use strict";
-var path = require("path");
+const path = require("path");
 
-var fs = require("fs-extra");
-var yaml = require("yaml-front-matter");
-var chalk = require("chalk");
-var { cloneDeep } = require("lodash");
+const fs = require("fs-extra");
+const yaml = require("yaml-front-matter");
+const chalk = require("chalk");
+const { cloneDeep } = require("lodash");
 
-var REGEX_NEWLINES = /^\n+/;
-var REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
+const REGEX_NEWLINES = /^\n+/;
+const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
 function yamlMarkdownToHtml(args) {
-  var html = (args.files || [])
+  const html = (args.files || [])
     .map(getFileContents)
     .filter(Boolean)
     .map(callRender);
@@ -24,14 +24,15 @@ function yamlMarkdownToHtml(args) {
 
   function getFileContents(filePath) {
     try {
-      var extension = path.extname(filePath);
-      var relativePath = path
+      const extension = path.extname(filePath);
+      const relativePath = path
         .relative(args.markdown, filePath)
         .replace(new RegExp(extension + "$"), "");
-      var contents = fs.readFileSync(filePath, "utf-8");
-      var stats = fs.statSync(filePath);
+      console.log(chalk.yellow("👓 reading " + filePath));
+      const contents = fs.readFileSync(filePath, "utf-8");
+      const stats = fs.statSync(filePath);
 
-      var data = yaml.loadFront(contents, "markdown");
+      const data = yaml.loadFront(contents, "markdown");
       data.markdown = data.markdown.replace(REGEX_NEWLINES, "");
       data.path = relativePath;
       data.updatedAt = stats.mtime;
@@ -44,22 +45,22 @@ function yamlMarkdownToHtml(args) {
   }
 
   function callRender(file, index, allFiles) {
-    var currentFolder = path.join(file.path, "..");
-    var folderPattern =
+    const currentFolder = path.join(file.path, "..");
+    const folderPattern =
       currentFolder === "."
         ? REGEX_NO_FOLDER
         : new RegExp("^" + currentFolder + "/[^/]+(/index)?$");
 
-    var filesInCurrentFolder = allFiles.filter(function (testedFile) {
+    const filesInCurrentFolder = allFiles.filter(function (testedFile) {
       return (
         folderPattern.test(testedFile.path) && testedFile.path !== file.path
       );
     });
 
-    var destinationPath = path.join(args.html, file.path + ".html");
+    const destinationPath = path.join(args.html, file.path + ".html");
 
-    console.log(chalk.yellow("rendering " + file.path));
-    var clonedFile = cloneDeep(file);
+    const clonedFile = cloneDeep(file);
+    console.log(chalk.yellow("⚙️ rendering " + file.path));
     return Promise.resolve(
       args.render(
         clonedFile,
@@ -69,17 +70,18 @@ function yamlMarkdownToHtml(args) {
     ).then(writeFile(destinationPath, clonedFile));
   }
 
-  function writeFile(destinationPath, data) {
+  function writeFile(destinationPath, file) {
     return function (renderedHtml) {
+      console.log(chalk.yellow("🖨 writing " + file.path));
       fs.outputFileSync(destinationPath, renderedHtml);
-      data.renderedPath = destinationPath;
-      return data;
+      file.renderedPath = destinationPath;
+      return file;
     };
   }
 
   function callPostRender(renderedFiles) {
     if (typeof args.postRender === "function") {
-      console.log(chalk.yellow("post render…"));
+      console.log(chalk.yellow("🏁 post render…"));
       return Promise.resolve(args.postRender(cloneDeep(renderedFiles)));
     }
     return renderedFiles;
