@@ -19,7 +19,7 @@ async function yamlMarkdownToHtml(cliParams) {
   const withoutSkippedFiles = fileContents.filter(Boolean);
 
   const cache = withoutSkippedFiles.reduce((result, file) => {
-    result[file.path] = hash(file.markdown);
+    result[file.path] = hash(JSON.stringify(file));
     return result;
   }, {});
 
@@ -31,7 +31,7 @@ async function yamlMarkdownToHtml(cliParams) {
   }
 
   const changedFiles = withoutSkippedFiles.filter(
-    (file) => hash(file.markdown) !== storedCache[file.path]
+    (file) => hash(JSON.stringify(file)) !== storedCache[file.path]
   );
 
   if (changedFiles.length === 0) {
@@ -40,7 +40,7 @@ async function yamlMarkdownToHtml(cliParams) {
   }
 
   changedFiles.forEach((file) => {
-    cache[file.path] = hash(file.markdown);
+    cache[file.path] = hash(JSON.stringify(file));
   });
 
   try {
@@ -74,13 +74,10 @@ function getFileContents(markdownFolder) {
 
       console.log(chalk.blue("👓 reading " + filePath));
       const contents = await fs.readFile(filePath, "utf-8");
-      const stats = await fs.stat(filePath);
 
       const data = yaml.loadFront(contents, "markdown");
       data.markdown = data.markdown.replace(REGEX_NEWLINES, "");
       data.path = relativePath;
-      data.updatedAt = stats.mtime;
-      data.createdAt = stats.birthtime;
       return data;
     } catch (error) {
       console.error(`⏩ skipped ${filePath}: ${error}`);

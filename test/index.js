@@ -48,7 +48,7 @@ test("errors", async function (is) {
 });
 
 test("usage", async function (is) {
-  is.plan(196);
+  is.plan(142);
 
   await fs.remove("test/public");
 
@@ -69,8 +69,6 @@ test("usage", async function (is) {
     is.equal(typeof currentFile, "object", "currentFile is object");
     is.ok("markdown" in currentFile, "currentFile has markdown");
     is.ok("path" in currentFile, "currentFile has path");
-    is.ok("updatedAt" in currentFile, "currentFile has updatedAt");
-    is.ok("createdAt" in currentFile, "currentFile has createdAt");
 
     is.ok(Array.isArray(filesInCurrentFolder), "folder collection is array");
     is.ok(
@@ -87,14 +85,6 @@ test("usage", async function (is) {
       "path" in filesInCurrentFolder[0],
       "first item of folder collection has path"
     );
-    is.ok(
-      "updatedAt" in filesInCurrentFolder[0],
-      "first item of folder collection has updatedAt"
-    );
-    is.ok(
-      "createdAt" in filesInCurrentFolder[0],
-      "first item of folder collection has createdAt"
-    );
 
     is.ok(Array.isArray(allFiles), "allFiles is array");
     is.equal(
@@ -110,8 +100,6 @@ test("usage", async function (is) {
     );
     is.ok("markdown" in allFiles[0], "first item of allFiles has markdown");
     is.ok("path" in allFiles[0], "first item of allFiles has path");
-    is.ok("updatedAt" in allFiles[0], "first item of allFiles has updatedAt");
-    is.ok("createdAt" in allFiles[0], "first item of allFiles has createdAt");
 
     if (currentFile.path === "index") {
       is.equal(
