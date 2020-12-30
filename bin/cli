@@ -19,9 +19,14 @@ const markdownFiles = [
   path.join(params.markdown, "**/*.markdown"),
 ];
 
-params.files = globby.sync(markdownFiles, { onlyFiles: true });
-try {
-  params.postRender = require(path.join(renderFolder, "post-render"));
-} catch (error) {}
+async function init() {
+  params.files = await globby(markdownFiles, { onlyFiles: true });
 
-yamlMarkdownToHtml(params);
+  try {
+    params.postRender = require(path.join(renderFolder, "post-render"));
+  } catch {}
+
+  yamlMarkdownToHtml(params);
+}
+
+init();
