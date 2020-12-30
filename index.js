@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 "use strict";
 const path = require("path");
+const crypto = require("crypto");
 
 const fs = require("fs-extra");
 const yaml = require("yaml-front-matter");
@@ -17,8 +18,39 @@ async function yamlMarkdownToHtml(cliParams) {
 
   const withoutSkippedFiles = fileContents.filter(Boolean);
 
+  const cache = withoutSkippedFiles.reduce((result, file) => {
+    result[file.path] = hash(file.markdown);
+    return result;
+  }, {});
+
+  let storedCache = {};
+  try {
+    storedCache = await fs.readJson("./.yamlmd2htmlcache");
+  } catch {
+    console.info("no cache found");
+  }
+
+  const changedFiles = withoutSkippedFiles.filter(
+    (file) => hash(file.markdown) !== storedCache[file.path]
+  );
+
+  if (changedFiles.length === 0) {
+    console.log(chalk.green(`✅ no changed files`));
+    return;
+  }
+
+  changedFiles.forEach((file) => {
+    cache[file.path] = hash(file.markdown);
+  });
+
+  try {
+    await fs.outputJson("./.yamlmd2htmlcache", cache);
+  } catch (error) {
+    console.error("couldn’t write cache", error);
+  }
+
   const renderedFiles = await Promise.all(
-    withoutSkippedFiles.map(
+    changedFiles.map(
       renderEachFile(cliParams.publicFolder, cliParams.renderFile)
     )
   );
@@ -26,6 +58,10 @@ async function yamlMarkdownToHtml(cliParams) {
   await callPostRender(cliParams.postRenderFile, renderedFiles);
 
   console.log(chalk.green(`✅ rendered ${renderedFiles.length}`));
+}
+
+function hash(string) {
+  return crypto.createHash("sha256").update(string).digest("base64");
 }
 
 function getFileContents(markdownFolder) {
