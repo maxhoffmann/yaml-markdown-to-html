@@ -12,15 +12,15 @@
   },
   "homepage": "https://github.com/maxhoffmann/yaml-markdown-to-html",
   "scripts": {
-    "test": "tape 'test/**/*.js' | tap-spec"
+    "test": "tape 'test/**/*.js' | tap-spec",
+    "build": "bin/cli test/content dist test/render"
   },
   "dependencies": {
     "chalk": "^1.0.0",
-    "chokidar": "^1.0.0-rc4",
-    "fs-extra": "^0.16.5",
-    "globby": "^1.2.0",
-    "lodash": "^4.17.15",
-    "yaml-front-matter": "^3.2.3"
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "lodash": "^4.17.20",
+    "yaml-front-matter": "^4.1.1"
   },
   "keywords": [
     "markdown",
