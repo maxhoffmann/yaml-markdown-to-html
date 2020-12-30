@@ -10,23 +10,23 @@ const { cloneDeep } = require("lodash");
 const REGEX_NEWLINES = /^\n+/;
 const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
-function yamlMarkdownToHtml(args) {
-  const html = (args.files || [])
-    .map(getFileContents)
+function yamlMarkdownToHtml(cliParams) {
+  const html = (cliParams.files || [])
+    .map(getFileContents(cliParams.markdown))
     .filter(Boolean)
-    .map(callRender);
+    .map(callRender(cliParams.html, cliParams.render));
 
   return Promise.all(html)
-    .then(callPostRender)
-    .then(function () {
-      console.log(chalk.green("done!"));
-    });
+    .then(callPostRender(cliParams.postRender))
+    .then(() => console.log(chalk.green("done!")));
+}
 
-  function getFileContents(filePath) {
+function getFileContents(markdownFolder) {
+  return (filePath) => {
     try {
       const extension = path.extname(filePath);
       const relativePath = path
-        .relative(args.markdown, filePath)
+        .relative(markdownFolder, filePath)
         .replace(new RegExp(extension + "$"), "");
       console.log(chalk.yellow("👓 reading " + filePath));
       const contents = fs.readFileSync(filePath, "utf-8");
@@ -42,9 +42,11 @@ function yamlMarkdownToHtml(args) {
       console.error(`skipped ${filePath}: ${error}`);
       return false;
     }
-  }
+  };
+}
 
-  function callRender(file, index, allFiles) {
+function callRender(htmlFolder, renderFunction) {
+  return (file, index, allFiles) => {
     const currentFolder = path.join(file.path, "..");
     const folderPattern =
       currentFolder === "."
@@ -57,35 +59,37 @@ function yamlMarkdownToHtml(args) {
       );
     });
 
-    const destinationPath = path.join(args.html, file.path + ".html");
+    const destinationPath = path.join(htmlFolder, file.path + ".html");
 
     const clonedFile = cloneDeep(file);
     console.log(chalk.yellow("⚙️ rendering " + file.path));
     return Promise.resolve(
-      args.render(
+      renderFunction(
         clonedFile,
         cloneDeep(filesInCurrentFolder),
         cloneDeep(allFiles)
       )
     ).then(writeFile(destinationPath, clonedFile));
-  }
+  };
+}
 
-  function writeFile(destinationPath, file) {
-    return function (renderedHtml) {
-      console.log(chalk.yellow("🖨 writing " + file.path));
-      fs.outputFileSync(destinationPath, renderedHtml);
-      file.renderedPath = destinationPath;
-      return file;
-    };
-  }
+function writeFile(destinationPath, file) {
+  return function (renderedHtml) {
+    console.log(chalk.yellow("🖨 writing " + file.path));
+    fs.outputFileSync(destinationPath, renderedHtml);
+    file.renderedPath = destinationPath;
+    return file;
+  };
+}
 
-  function callPostRender(renderedFiles) {
-    if (typeof args.postRender === "function") {
+function callPostRender(postRenderFunction) {
+  return (renderedFiles) => {
+    if (typeof postRenderFunction === "function") {
       console.log(chalk.yellow("🏁 post render…"));
-      return Promise.resolve(args.postRender(cloneDeep(renderedFiles)));
+      return Promise.resolve(postRenderFunction(cloneDeep(renderedFiles)));
     }
     return renderedFiles;
-  }
+  };
 }
 
 module.exports = yamlMarkdownToHtml;
