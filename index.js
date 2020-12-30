@@ -57,7 +57,7 @@ async function yamlMarkdownToHtml(cliParams) {
 
   await callPostRender(cliParams.postRenderFile, renderedFiles);
 
-  console.log(chalk.green(`✅ rendered ${renderedFiles.length}`));
+  console.log(chalk.green(`✅ rendered ${renderedFiles.length} files`));
 }
 
 function hash(string) {
@@ -120,7 +120,7 @@ function renderEachFile(htmlFolder, renderFunction) {
 
 async function callPostRender(postRenderFunction, renderedFiles) {
   if (typeof postRenderFunction === "function") {
-    console.log(chalk.yellow("🏁 post render…"));
+    console.log(chalk.yellow("🏁 calling post render"));
     postRenderFunction(cloneDeep(renderedFiles));
   }
   return renderedFiles;
