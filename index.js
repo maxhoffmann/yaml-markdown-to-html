@@ -25,7 +25,7 @@ async function yamlMarkdownToHtml(cliParams) {
 
   await callPostRender(cliParams.postRenderFile, renderedFiles);
 
-  console.log(chalk.green("✅ done!"));
+  console.log(chalk.green(`✅ rendered ${renderedFiles.length}`));
 }
 
 function getFileContents(markdownFolder) {
@@ -36,7 +36,7 @@ function getFileContents(markdownFolder) {
         .relative(markdownFolder, filePath)
         .replace(new RegExp(extension + "$"), "");
 
-      console.log(chalk.yellow("👓 reading " + filePath));
+      console.log(chalk.blue("👓 reading " + filePath));
       const contents = await fs.readFile(filePath, "utf-8");
       const stats = await fs.stat(filePath);
 
@@ -70,7 +70,7 @@ function renderEachFile(htmlFolder, renderFunction) {
     const destinationPath = path.join(htmlFolder, file.path + ".html");
     const clonedFile = cloneDeep(file);
 
-    console.log(chalk.yellow("⚙️ rendering " + file.path));
+    console.log(chalk.cyan("⚙️ rendering " + file.path));
     const renderedHtml = await renderFunction(
       clonedFile,
       cloneDeep(filesInCurrentFolder),
