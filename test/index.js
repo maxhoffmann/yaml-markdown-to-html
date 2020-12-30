@@ -11,20 +11,23 @@ var sourcePatterns = ["**/*.md", "**/*.markdown"].map(function (file) {
 
 var sourceFiles = globby.sync(sourcePatterns, { nodir: true });
 
-test("errors", function (is) {
+test("errors", async function (is) {
   is.plan(2);
 
-  is.throws(function () {
-    yamlMarkdownToHtml({
+  try {
+    await yamlMarkdownToHtml({
       markdown: "test/content",
       html: "test/public",
       files: sourceFiles,
       render: "",
     });
-  }, "render !== function throws");
+    is.fail("missing render function doesn’t error");
+  } catch (error) {
+    is.pass("render !== function throws");
+  }
 
-  is.doesNotThrow(function () {
-    yamlMarkdownToHtml({
+  try {
+    await yamlMarkdownToHtml({
       markdown: "test/content",
       html: "test/public",
       files: sourceFiles,
@@ -32,14 +35,18 @@ test("errors", function (is) {
         return Promise.resolve("html");
       },
     });
-  }, "valid render function");
+    is.pass("valid render function");
+  } catch (error) {
+    is.fail("valid parameters are failing");
+  }
 });
 
-test("usage", function (is) {
+test("usage", async function (is) {
   is.plan(196);
 
-  fs.removeSync("test/public");
-  yamlMarkdownToHtml({
+  await fs.remove("test/public");
+
+  await yamlMarkdownToHtml({
     markdown: "test/content",
     html: "test/public",
     files: sourceFiles,

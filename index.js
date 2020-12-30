@@ -10,7 +10,7 @@ const { cloneDeep } = require("lodash");
 const REGEX_NEWLINES = /^\n+/;
 const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
-function yamlMarkdownToHtml(cliParams) {
+async function yamlMarkdownToHtml(cliParams) {
   const html = (cliParams.files || [])
     .map(getFileContents(cliParams.markdown))
     .filter(Boolean)
