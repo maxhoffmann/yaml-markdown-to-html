@@ -31,7 +31,9 @@ async function yamlMarkdownToHtml(cliParams) {
   }
 
   const changedFiles = withoutSkippedFiles.filter(
-    (file) => hash(JSON.stringify(file)) !== storedCache[file.path]
+    (file) =>
+      cliParams.skipCache ||
+      hash(JSON.stringify(file)) !== storedCache[file.path]
   );
 
   if (changedFiles.length === 0) {

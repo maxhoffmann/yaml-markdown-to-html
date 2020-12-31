@@ -11,6 +11,7 @@ const params = {
   contentFolder: args[0] || "content",
   publicFolder: args[1] || "public",
   renderFile: require(path.join(renderFolder, "render")),
+  skipCache: args[3] === "--skipCache",
   postRenderFile: false,
 };
 

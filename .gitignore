@@ -2,3 +2,4 @@ node_modules
 test/html
 .DS_Store
 /dist
+.yamlmd2htmlcache
