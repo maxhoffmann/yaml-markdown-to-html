@@ -4,7 +4,7 @@
   "description": "render a folder of markdown files with yaml front matter to html",
   "type": "module",
   "module": "index.js",
-  "bin": "bin/cli",
+  "bin": "bin/cli.js",
   "author": "Maximilian Hoffmann",
   "license": "MIT",
   "repository": {
