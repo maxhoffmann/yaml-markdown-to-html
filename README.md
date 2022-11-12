@@ -1,7 +1,7 @@
 yaml-markdown-to-html [![version][1]][2]
 =======================
 
-render a folder of markdown files with yaml front matter to html
+process a folder of markdown files with yaml front matter and convert it with your libraries to html
 
 __Example:__
 ![transformation example](example.png)
