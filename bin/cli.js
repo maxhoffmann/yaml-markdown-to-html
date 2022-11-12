@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import path from "path";
 import { globby } from "globby";
-import yamlMarkdownToHtml from "../";
+import yamlMarkdownToHtml from "../index.js";
 
 const args = process.argv.slice(2);
 const renderFolder = path.resolve(process.cwd(), args[2] || "render");
