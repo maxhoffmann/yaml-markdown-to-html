@@ -8,20 +8,21 @@ import cloneDeep from "lodash.clonedeep";
 const REGEX_NEWLINES = /^\n+/;
 const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
 
-async function yamlMarkdownToHtml(cliParams) {
+export default async function yamlMarkdownToHtml(cliParams) {
+  const files = cliParams.files || [];
   const fileContents = await Promise.all(
-    (cliParams.files || []).map(getFileContents(cliParams.contentFolder))
+    files.map(getFileContents(cliParams.contentFolder))
   );
 
-  const withoutSkippedFiles = fileContents.filter(Boolean);
+  const validFileContents = fileContents.filter(Boolean);
 
-  if (withoutSkippedFiles.length === 0) {
+  if (validFileContents.length === 0) {
     console.log(chalk.green(`✅ no changed files`));
     return;
   }
 
   const renderedFiles = await Promise.all(
-    withoutSkippedFiles.map(
+    validFileContents.map(
       renderEachFile(cliParams.publicFolder, cliParams.renderFile)
     )
   );
@@ -40,6 +41,7 @@ function getFileContents(markdownFolder) {
         .replace(new RegExp(extension + "$"), "");
 
       console.log(chalk.blue("👓 reading " + filePath));
+
       const contents = await fs.readFile(filePath, "utf-8");
 
       const data = yaml.loadFront(contents, "markdown");
@@ -92,5 +94,3 @@ async function callPostRender(postRenderFunction, renderedFiles) {
   }
   return renderedFiles;
 }
-
-export default yamlMarkdownToHtml;
