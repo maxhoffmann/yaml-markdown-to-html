@@ -1,6 +1,6 @@
 {
   "name": "yaml-markdown-to-html",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "description": "render a folder of markdown files with yaml front matter to html",
   "type": "module",
   "module": "index.js",
