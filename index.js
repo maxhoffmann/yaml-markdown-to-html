@@ -73,7 +73,7 @@ function renderEachFile(htmlFolder, renderFunction) {
     const clonedFile = cloneDeep(file);
 
     console.log(chalk.cyan("⚙️ rendering " + file.path));
-    const renderedHtml = await renderFunction(
+    const renderedHtml = await renderFunction.default(
       clonedFile,
       cloneDeep(filesInCurrentFolder),
       cloneDeep(allFiles)
@@ -88,9 +88,9 @@ function renderEachFile(htmlFolder, renderFunction) {
 }
 
 async function callPostRender(postRenderFunction, renderedFiles) {
-  if (typeof postRenderFunction === "function") {
+  if (typeof postRenderFunction.default === "function") {
     console.log(chalk.yellow("🏁 calling post render"));
-    postRenderFunction(cloneDeep(renderedFiles));
+    postRenderFunction.default(cloneDeep(renderedFiles));
   }
   return renderedFiles;
 }
