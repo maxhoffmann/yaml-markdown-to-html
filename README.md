@@ -1,7 +1,7 @@
 yaml-markdown-to-html [![version][1]][2]
 =======================
 
-“Bring your own libraries“ ~100 LOC static site generator
+**“Bring your own libraries“ ~100 LOC static site generator**
 
 This CLI tool can turn any folder of markdown files with YAML front matter to HTML.
 
