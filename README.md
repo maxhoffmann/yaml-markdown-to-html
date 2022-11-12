@@ -34,14 +34,12 @@ yaml-markdown-to-html <content> <public> <render>
 __example:__ `render/render.js`
 
 ```js
-module.exports = function render(currentFile, filesInCurrentFolder, allFiles) {
-  return Promise.resolve(
-    '<code>'
+export default async function render(currentFile, filesInCurrentFolder, allFiles) {
+  return '<code>'
       +JSON.stringify(currentFile, null, 2)+' of '+allFiles.length
       +'\n'
       +JSON.stringify(filesInCurrentFolder, null, 2)
-    +'</code>'
-  );
+    +'</code>';
 };
 ```
 
@@ -50,9 +48,9 @@ module.exports = function render(currentFile, filesInCurrentFolder, allFiles) {
 __example:__ `render/post-render.js`
 
 ```js
-module.exports = function postRender(renderedFiles) {
+export default async function postRender(renderedFiles) {
   console.log('number of rendered files: %i', renderedFiles.length);
-  return Promise.resolve(renderedFiles);
+  return renderedFiles;
 };
 ```
 
