@@ -1,11 +1,9 @@
 /* eslint no-console: 0 */
-"use strict";
-const path = require("path");
-
-const fs = require("fs-extra");
-const yaml = require("yaml-front-matter");
-const chalk = require("chalk");
-const { cloneDeep } = require("lodash");
+import path from "path";
+import fs from "fs-extra";
+import yaml from "yaml-front-matter";
+import chalk from "chalk";
+import cloneDeep from "lodash.clonedeep";
 
 const REGEX_NEWLINES = /^\n+/;
 const REGEX_NO_FOLDER = /^[^\/]+(\/index)?$/;
@@ -95,4 +93,4 @@ async function callPostRender(postRenderFunction, renderedFiles) {
   return renderedFiles;
 }
 
-module.exports = yamlMarkdownToHtml;
+export default yamlMarkdownToHtml;

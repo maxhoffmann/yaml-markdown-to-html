@@ -1,15 +1,14 @@
-"use strict";
-var fs = require("fs-extra");
-var path = require("path");
-var test = require("tape");
-var globby = require("globby");
-var yamlMarkdownToHtml = require("../");
+import fs from "fs-extra";
+import path from "path";
+import test from "tape";
+import { globby } from "globby";
+import yamlMarkdownToHtml from "../index.js";
 
-var sourcePatterns = ["**/*.md", "**/*.markdown"].map(function (file) {
+const sourcePatterns = ["**/*.md", "**/*.markdown"].map(function (file) {
   return path.join("test/content", file);
 });
 
-var sourceFiles = globby.sync(sourcePatterns, { nodir: true });
+const sourceFiles = await globby(sourcePatterns, { nodir: true });
 
 test("errors", async function (is) {
   is.plan(2);

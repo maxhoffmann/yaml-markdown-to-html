@@ -2,7 +2,8 @@
   "name": "yaml-markdown-to-html",
   "version": "10.1.0",
   "description": "render a folder of markdown files with yaml front matter to html",
-  "main": "index.js",
+  "type": "module",
+  "module": "index.js",
   "bin": "bin/cli",
   "author": "Maximilian Hoffmann",
   "license": "MIT",
@@ -16,10 +17,10 @@
     "build": "bin/cli test/content dist test/render"
   },
   "dependencies": {
-    "chalk": "^1.0.0",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "lodash": "^4.17.20",
+    "chalk": "^5.1.2",
+    "fs-extra": "^10.1.0",
+    "globby": "^13.1.2",
+    "lodash.clonedeep": "^4.5.0",
     "yaml-front-matter": "^4.1.1"
   },
   "keywords": [
@@ -31,6 +32,6 @@
   ],
   "devDependencies": {
     "tap-spec": "^5.0.0",
-    "tape": "^5.1.0"
+    "tape": "^5.6.1"
   }
 }

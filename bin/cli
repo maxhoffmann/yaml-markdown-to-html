@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-"use strict";
-const path = require("path");
-const globby = require("globby");
-const yamlMarkdownToHtml = require("../");
+import path from "path";
+import { globby } from "globby";
+import yamlMarkdownToHtml from "../";
 
 const args = process.argv.slice(2);
 const renderFolder = path.resolve(process.cwd(), args[2] || "render");
