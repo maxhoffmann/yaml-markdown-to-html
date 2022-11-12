@@ -1,7 +1,11 @@
 yaml-markdown-to-html [![version][1]][2]
 =======================
 
-process a folder of markdown files with yaml front matter and convert it with the libraries of your choice to html
+“Bring your own libraries“ ~100 LOC static site generator
+
+This CLI tool can turn any folder of markdown files with YAML front matter to HTML.
+
+You only need to provide an async render function to the generator, which takes the raw markdown string and converts it to HTML. Use any markdown library and rendering library you want, make HTTP request to fetch data from an API or do some other asynchronous processes. As long as the function returns with a Promise that contains the final HTML as a string, it can output the files for you.
 
 __Example:__
 ![transformation example](example.png)
