@@ -9,7 +9,7 @@ const renderFolder = path.resolve(process.cwd(), args[2] || "render");
 const params = {
   contentFolder: args[0] || "content",
   publicFolder: args[1] || "public",
-  renderFile: require(path.join(renderFolder, "render")),
+  renderFile: import(path.join(renderFolder, "render.js")),
   postRenderFile: false,
 };
 
@@ -22,7 +22,7 @@ async function init() {
   params.files = await globby(markdownFiles, { onlyFiles: true });
 
   try {
-    params.postRenderFile = require(path.join(renderFolder, "post-render"));
+    params.postRenderFile = import(path.join(renderFolder, "post-render.js"));
   } catch {}
 
   await yamlMarkdownToHtml(params);
