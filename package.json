@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "chalk": "^5.1.2",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "globby": "^13.1.2",
     "lodash.clonedeep": "^4.5.0",
     "yaml-front-matter": "^4.1.1"
